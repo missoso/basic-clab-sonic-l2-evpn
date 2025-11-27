@@ -45,7 +45,7 @@ docker-sonic-vs                        latest    2d9c647a53df   4 hours ago     
 
 ```
 
-**Caveat #1** : It is not an exact science at all what the image will have, for example when the above was performed the image created had no VXLAN support at the FRR level (meaning all needs to be done at the Linux host level in terms of bridge domains and VXLAN binds) and when it boots the bgpd is set to "no" independently of the contents of the file /etc/frr/daemons
+**Caveat #1** : It is not an exact science what the image will have, for example when the above was performed the image created had no VXLAN support at the FRR level (altough the version of FRR it comes with has support for it), whcih implies that the VXLAN bins will need to be done at the Linux host level. Also when it boots the FRR bgpd daemon is set to "no" independently of the contents of the file /etc/frr/daemons
 
 **Caveat #2** : The binds defined in the clab.yaml for the FRR config and daemons setup don't fully work
 
@@ -90,8 +90,14 @@ ssh admin@spine1
 SONiC and Linux clients cannot be reached via SSH, as it is not enabled, but it is possible to connect to them with a docker exec command.
 
 ```bash
-# reach a Linux client via Docker
+docker exec -it leaf1 bash
 docker exec -it client1 bash
+docker exec -it client2 bash
+```
+
+Access the SONiC FRR shell (vtysh)
+```bash
+docker exec -it leaf1 vtysh
 ```
 
 # SONiC - Setup required after boot 
