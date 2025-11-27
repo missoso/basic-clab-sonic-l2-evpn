@@ -65,8 +65,39 @@ Caveat #2 : The binds defined in the clab.yaml for the FRR config and daemons se
 
 The files specified in the binds are copied but they are ingored at boot, so after boot the FRR daemons needs to be restarted (so that BGP is enabled) and the configuration needs to be loaded via vtysh
 
+## Deploying the lab
 
-# SONiC - setup after boot 
+The lab is deployed with the [containerlab](https://containerlab.dev) project, where [`basic-clab-sonic-l2-evpn.clab.yml`](https://github.com/missoso/basic-clab-sonic-l2-evpn/blob/main/basic-clab-sonic-l2-evpn.clab.yml) file declaratively describes the lab topology.
+
+```bash
+# change into the cloned directory
+# and execute
+containerlab deploy --reconfigure
+```
+
+To remove the lab:
+
+```bash
+containerlab destroy --cleanup
+```
+
+## Access the lab
+
+SRL nodes using SSH through their management IP address or their hostname as defined in the topology file.
+
+```bash
+# reach a SR Linux leaf or a spine via SSH
+ssh admin@leaf2
+ssh admin@spine1
+```
+SONiC and Linux clients cannot be reached via SSH, as it is not enabled, but it is possible to connect to them with a docker exec command.
+
+```bash
+# reach a Linux client via Docker
+docker exec -it client1 bash
+```
+
+# SONiC - Setup required after boot 
 
 After the SONiC container has booted the following actions are required: 
 
