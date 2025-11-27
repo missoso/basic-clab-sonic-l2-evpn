@@ -27,9 +27,6 @@ The starting point are the instructions found here [https://containerlab.dev/man
 The result of the steps above should be : 
 
 ```bash
-```
-
-```bash
 % ls | grep sonic
 docker-sonic-vs.gz
 ```
@@ -48,9 +45,9 @@ docker-sonic-vs                        latest    2d9c647a53df   4 hours ago     
 
 ```
 
-Caveat #1 : It is not an exact science at all what the image will have, for example when the above was performed the image created had no VXLAN support at the FRR level (meaning all needs to be done at the Linux host level in terms of bridge domains and VXLAN binds) and when it boots the bgpd is set to "no" independently of the contents of the file /etc/frr/daemons
+**Caveat #1** : It is not an exact science at all what the image will have, for example when the above was performed the image created had no VXLAN support at the FRR level (meaning all needs to be done at the Linux host level in terms of bridge domains and VXLAN binds) and when it boots the bgpd is set to "no" independently of the contents of the file /etc/frr/daemons
 
-Caveat #2 : The binds defined in the clab.yaml for the FRR config and daemons setup don't fully work
+**Caveat #2** : The binds defined in the clab.yaml for the FRR config and daemons setup don't fully work
 
 ```bash
     leaf1:
@@ -116,17 +113,20 @@ root@leaf1:/# vtysh -f /etc/frr/frr.conf
 
 3 - Configure the vxlan and br interfaces
 ```bash
-root@leaf1:/# ip link add vxlan100 type vxlan id 100 dstport 4789 local 10.0.1.1 nolearning
-root@leaf1:/# brctl addbr br100
-root@leaf1:/# brctl addif br100 vxlan100   
-root@leaf1:/# brctl stp br100 off
-root@leaf1:/#  ip link set up dev br100   
-root@leaf1:/# ip link set up dev vxlan100   
-root@leaf1:/# ip link set eth1 master br100
-root@leaf1:/# ip link set eth1 up
+ip link add vxlan100 type vxlan id 100 dstport 4789 local 10.0.1.1 nolearning
+brctl addbr br100
+brctl addif br100 vxlan100   
+brctl stp br100 off
+ip link set up dev br100   
+ip link set up dev vxlan100   
+ip link set eth1 master br100
+ip link set eth1 up
 ```
 
 10.0.1.1 is the RID of Leaf1 and 100 is the VNI to be used
+
+
+**Caveat #3** : It is not ideal to have "nolearning" used in the vxlan interface, however, without it the routes were exchanged between leafs but the ping between clients would not work, because there was a MAC learning issue in the br interface at the SONiC box, and the usage of the br interface is mandatory since this is layer 2 EVPN (unclear what was then root cause so just used nolearning), this issue will not exist for layer 3 EVPN.
 
 # Client 1 and 2 MAC addresses 
 
