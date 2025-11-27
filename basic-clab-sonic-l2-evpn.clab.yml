@@ -1,11 +1,11 @@
 # Licensed under the BSD 3-Clause License.
 # SPDX-License-Identifier: BSD-3-Clause
 
-name: sonic1
+name: basic-clab-sonic-l2-evpn
 prefix: ""
 
 mgmt:
-  network: sonic1
+  network: basic-clab-sonic-l2-evpn
   ipv4-subnet: 172.80.80.0/24
 
 topology:
