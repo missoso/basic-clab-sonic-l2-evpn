@@ -14,7 +14,7 @@ The starting point are the instructions found here [https://containerlab.dev/man
 
 1. Go to the pipelines list: https://sonic-build.azurewebsites.net/ui/sonic/pipelines
 
-2. Scroll all the way to the bottom where vs platform is listed
+2. Scroll all the way to the bottom where "vs" platform is listed
 
 3. Pick a branch name that you want to use (e.g. 202405) and click on the "Build History".
 
@@ -22,7 +22,7 @@ The starting point are the instructions found here [https://containerlab.dev/man
 
 5. In the new window, you will see a list with a single artifact, click on it
 
-6. One more long scroll down until you see target/docker-sonic-vs.gz name (or Ctrl+F for it), click on it to start the download or copy the download link.
+6. Scroll down until you see target/docker-sonic-vs.gz name and download it
 
 The result of the steps above should be : 
 
@@ -34,7 +34,6 @@ docker-sonic-vs.gz
 Gunzip and load it to the docker images local repo
 
 ```bash
-
 % gunzip -d docker-sonic-vs.gz 
 
 $ docker load < docker-sonic-vs
@@ -42,12 +41,11 @@ $ docker load < docker-sonic-vs
 $ docker image ls
 REPOSITORY                             TAG       IMAGE ID       CREATED         SIZE
 docker-sonic-vs                        latest    2d9c647a53df   4 hours ago     797MB 
-
 ```
 
-**Caveat #1** : It is not an exact science what the image will have, for example when the above was performed the image created had no VXLAN support at the FRR level (altough the version of FRR it comes with has support for it), whcih implies that the VXLAN bins will need to be done at the Linux host level. Also when it boots the FRR bgpd daemon is set to "no" independently of the contents of the file /etc/frr/daemons
+**Caveat #1** : It is not an exact science what the image will have, for example when the above was performed the image created had no VXLAN support at the FRR level (altough the version of FRR it comes with has support for it), which implies that the VXLAN binds will need to be done at the Linux host level. Also when it boots the FRR bgpd daemon is set to "no" independently of the contents of the file /etc/frr/daemons (so FRR needs to be restarted after boot so that the settings in the file /etc/frr/daemons are applied)
 
-**Caveat #2** : The binds defined in the clab.yaml for the FRR config and daemons setup don't fully work
+**Caveat #2** : The binds defined in the basic-clab-sonic-l2-evpn.clab.yml for the FRR config and daemons setup don't fully work
 
 ```bash
     leaf1:
@@ -67,14 +65,12 @@ The files specified in the binds are copied but they are ingored at boot, so aft
 The lab is deployed with the [containerlab](https://containerlab.dev) project, where [`basic-clab-sonic-l2-evpn.clab.yml`](https://github.com/missoso/basic-clab-sonic-l2-evpn/blob/main/basic-clab-sonic-l2-evpn.clab.yml) file declaratively describes the lab topology.
 
 ```bash
-# change into the cloned directory
-# and execute
+# to create the lab execute in thecloned directory
 containerlab deploy --reconfigure
 ```
 
-To remove the lab:
-
 ```bash
+# to remove the lab execute in thecloned directory
 containerlab destroy --cleanup
 ```
 
@@ -87,15 +83,16 @@ SRL nodes using SSH through their management IP address or their hostname as def
 ssh admin@leaf2
 ssh admin@spine1
 ```
-SONiC and Linux clients cannot be reached via SSH, as it is not enabled, but it is possible to connect to them with a docker exec command.
 
+
+SONiC and Linux clients cannot be reached via SSH, as it is not enabled, but it is possible to connect to them with a docker exec command.
 ```bash
 docker exec -it leaf1 bash
 docker exec -it client1 bash
 docker exec -it client2 bash
 ```
 
-Access the SONiC FRR shell (vtysh)
+Access the SONiC FRR shell directly (vtysh)
 ```bash
 docker exec -it leaf1 vtysh
 ```
