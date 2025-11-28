@@ -65,12 +65,12 @@ The files specified in the binds are copied but they are ingored at boot, so aft
 The lab is deployed with the [containerlab](https://containerlab.dev) project, where [`basic-clab-sonic-l2-evpn.clab.yml`](https://github.com/missoso/basic-clab-sonic-l2-evpn/blob/main/basic-clab-sonic-l2-evpn.clab.yml) file declaratively describes the lab topology.
 
 ```bash
-# to create the lab execute in thecloned directory
+# to create the lab execute in the cloned directory
 containerlab deploy --reconfigure
 ```
 
 ```bash
-# to remove the lab execute in thecloned directory
+# to remove the lab execute in the cloned directory
 containerlab destroy --cleanup
 ```
 
